@@ -1,0 +1,14 @@
+{
+  "asOf": "2024",
+  "source": "https://www.europarl.europa.eu/at-your-service/fr/meps",
+  "note": "Indemnité identique pour les 720 eurodéputés (avant impôt communautaire de l'UE).",
+  "brutMensuel": 10377.43,
+  "netMensuel": 8091.14,
+  "composition": [
+    { "libelle": "Indemnité de base (38,5 % du traitement d'un juge à la CJUE)", "montant": 10377.43 }
+  ],
+  "moyens": [
+    { "libelle": "Indemnité de frais généraux", "montant": 4950 },
+    { "libelle": "Indemnité journalière (jours de présence)", "montant": 350 }
+  ]
+}

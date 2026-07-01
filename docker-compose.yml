@@ -1,0 +1,11 @@
+services:
+  ficheeuro:
+    build: .
+    container_name: ficheeuro
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PORT=10100
+      - VAR_DIR=/app/var
+    volumes:
+      - ./var:/app/var

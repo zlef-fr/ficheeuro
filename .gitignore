@@ -1,0 +1,5 @@
+# heavy raw open-data snapshot
+pipeline/raw-euro/
+node_modules/
+*.log
+var/
