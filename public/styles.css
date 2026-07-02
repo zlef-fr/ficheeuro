@@ -394,3 +394,6 @@ a.pays-card:hover .pays-arrow { color: var(--bleu); }
 .pays-glegend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; }
 .pays-glegend span { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); font-weight: 600; }
 .pays-glegend i { width: 9px; height: 9px; border-radius: 2px; }
+
+/* vote description (EU: uniquely identifies the vote within a report) */
+.vdesc { font-size: 13px; color: var(--ink-2); margin-top: 2px; font-weight: 500; }

@@ -229,6 +229,7 @@ V.fiche = async (root, m) => {
             <div class="vote-pos"><span class="vpos-tag ${esc(v.position)}">${esc(posLabel[v.position] || v.position)}</span></div>
             <div class="vote-body">
               <div class="vt">${esc(v.titre || "Scrutin n°" + v.numero)}</div>
+              ${v.desc ? `<div class="vdesc">${esc(v.desc)}${v.ref ? ` · ${esc(v.ref)}` : ""}</div>` : ""}
               <div class="vm"><span>${esc(new Date(v.date).toLocaleDateString(STD.lang, { day: "2-digit", month: "short", year: "numeric" }))}</span>${sortTag(v.sort)}
                 <a href="https://howtheyvote.eu/votes/${esc(v.numero)}" target="_blank" rel="noopener" style="font-size:12px">${esc(t("fiche.source"))} ↗</a></div>
             </div>

@@ -82,7 +82,11 @@ votes = {}
 for r in rd("votes.csv"):
     if r["timestamp"] >= TERM_START:   # all term-10 roll-call votes (like the AN scrutins)
         result = (r.get("result") or "").upper()
+        # description uniquely identifies the vote within a report (amendment n°, §, considérant…)
+        desc = (r.get("description") or "").strip()
+        ref = (r.get("reference") or "").strip()
         votes[r["id"]] = {"date": r["timestamp"][:10], "titre": r.get("display_title") or "",
+                          "desc": desc, "ref": ref,
                           "sort": "adopté" if result == "ADOPTED" else ("rejeté" if result == "REJECTED" else None)}
 TERM10 = set(votes)
 print("· %d scrutins term-10" % len(TERM10), file=sys.stderr)
@@ -133,7 +137,7 @@ for mid, m in meps.items():
                     m["nLoyal"] += 1
         v = votes[vid]
         m["votes"].append({"numero": vid, "date": v["date"], "position": pos,
-                           "titre": v["titre"], "sort": v["sort"]})
+                           "titre": v["titre"], "desc": v["desc"], "ref": v["ref"], "sort": v["sort"]})
     # eligible = every term-10 roll-call where the MEP had a row (auto mandate window)
     m["nEligible"] = len(m["votes"])
     m["presenceRate"] = pct(m["nPresent"], m["nEligible"])
