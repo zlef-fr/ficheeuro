@@ -6,6 +6,7 @@ services:
     network_mode: host
     environment:
       - PORT=10100
+      - SITE_BRAND=eu
       - VAR_DIR=/app/var
     volumes:
       - ./var:/app/var
