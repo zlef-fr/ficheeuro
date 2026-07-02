@@ -1,4 +1,4 @@
-// FicheEurodéputé.fr — view renderers. All dynamic values pass through STD.esc().
+// FicheDéputé.eu — view renderers. All dynamic values pass through STD.esc().
 const V = (STD.views = {});
 const t = STD.t, esc = STD.esc;
 
@@ -50,7 +50,7 @@ function wireSearch(input, box) {
 
 // ── HOME ──────────────────────────────────────────────────────────────────
 V.home = async (root) => {
-  setMeta("FicheEurodéputé.fr — " + t("meta.tagline"), t("meta.sub"), "https://eu.fichedepute.fr/");
+  setMeta("FicheDéputé.eu — " + t("meta.tagline"), t("meta.sub"), "https://fichedepute.eu/");
   const stats = await STD.getJSON("/api/stats");
   const groupes = (await STD.getJSON("/api/groupes")).groupes;
   const meta = await STD.getJSON("/api/meta");
@@ -115,7 +115,7 @@ V.home = async (root) => {
 
 // ── LIST ──────────────────────────────────────────────────────────────────
 V.list = async (root) => {
-  setMeta(t("list.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/deputes");
+  setMeta(t("list.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/deputes");
   const { deputes } = await STD.getJSON("/api/deputes");
   const groups = [...new Set(deputes.map((d) => d.groupe))].sort();
   const deps = [...new Map(deputes.filter((d) => d.dep).map((d) => [d.dep, d.depNom])).entries()]
@@ -177,11 +177,11 @@ V.fiche = async (root, m) => {
   const g = d.groupe || { sigle: "NI", color: "#8a8f98", libelle: "Non inscrit" };
   const eur = (n) => n.toLocaleString(STD.lang, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
   const name = `${d.prenom} ${d.nom}`;
-  setMeta(`${name} — FicheEurodéputé.fr`,
+  setMeta(`${name} — FicheDéputé.eu`,
     `${name} (${g.sigle}) : ${d.presenceRate}% de participation aux scrutins publics. ${d.nPresent} scrutins sur ${d.nEligible}.`,
-    "https://eu.fichedepute.fr/depute/" + d.slug);
+    "https://fichedepute.eu/depute/" + d.slug);
   const ogimg = document.querySelector('meta[property="og:image"]');
-  if (ogimg) ogimg.setAttribute("content", "https://eu.fichedepute.fr/og/" + d.slug + ".png");
+  if (ogimg) ogimg.setAttribute("content", "https://fichedepute.eu/og/" + d.slug + ".png");
 
   const born = d.dateNaissance ? new Date(d.dateNaissance).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : null;
   const sortTag = (s) => {
@@ -302,7 +302,7 @@ V.fiche = async (root, m) => {
   });
   root.querySelector("#share").addEventListener("click", async () => {
     const url = location.href;
-    const shareData = { title: `${name} — FicheEurodéputé.fr`, text: `${name} : ${d.participationRate}% de participation aux scrutins.`, url };
+    const shareData = { title: `${name} — FicheDéputé.eu`, text: `${name} : ${d.participationRate}% de participation aux scrutins.`, url };
     if (navigator.share) { try { await navigator.share(shareData); } catch (e) {} }
     else { try { await navigator.clipboard.writeText(url); STD.toast(t("fiche.shared")); } catch (e) {} }
   });
@@ -310,7 +310,7 @@ V.fiche = async (root, m) => {
 
 // ── RANKINGS ──────────────────────────────────────────────────────────────
 V.rankings = async (root) => {
-  setMeta(t("rank.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/classements");
+  setMeta(t("rank.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/classements");
   const stats = await STD.getJSON("/api/stats");
   // colorMode: "score" → green/amber/red by value; "group" → the deputy's group colour
   const tbl = (title, arr, field, colorMode = "score") => `
@@ -337,7 +337,7 @@ V.rankings = async (root) => {
 
 // ── GAME · Devine l'eurodéputé (normal = 4 choix · expert = saisie libre) ─────
 V.game = async (root) => {
-  setMeta(t("game.title") + " — FicheEurodéputé.fr", t("game.lead"), "https://eu.fichedepute.fr/jeu");
+  setMeta(t("game.title") + " — FicheDéputé.eu", t("game.lead"), "https://fichedepute.eu/jeu");
   const MODES = ["normal", "expert"];
   let mode = MODES.includes(localStorage.getItem("fd_game_mode")) ? localStorage.getItem("fd_game_mode") : "normal";
   const bestKey = () => "fd_game_best_" + mode;
@@ -492,7 +492,7 @@ V.game = async (root) => {
 
 // ── GROUPS ────────────────────────────────────────────────────────────────
 V.groups = async (root) => {
-  setMeta(t("groups.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/groupes");
+  setMeta(t("groups.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/groupes");
   const { groupes } = await STD.getJSON("/api/groupes");
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
     <div class="sec-head"><h2>${esc(t("groups.title"))}</h2></div>
@@ -513,7 +513,7 @@ V.groups = async (root) => {
 
 // ── PAYS (per-country stats) ──────────────────────────────────────────────
 V.pays = async (root) => {
-  setMeta(t("pays.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/pays");
+  setMeta(t("pays.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/pays");
   const { pays } = await STD.getJSON("/api/pays");
   const render = (arr) => arr.map((p) => `
     <a class="card pays-card" href="/deputes?pays=${esc(p.code)}" data-link>
@@ -548,7 +548,7 @@ V.pays = async (root) => {
 
 // ── METHODO ───────────────────────────────────────────────────────────────
 V.methodo = async (root) => {
-  setMeta(t("methodo.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/methode");
+  setMeta(t("methodo.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/methode");
   const meta = await STD.getJSON("/api/meta");
   const d = meta.generatedAt ? new Date(meta.generatedAt).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : "—";
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
