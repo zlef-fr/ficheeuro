@@ -161,6 +161,9 @@ V.list = async (root) => {
       </div></a>`).join("") || `<div class="sr-none">${esc(t("search.none"))}</div>`;
   }
   [fq, fg, fd, fs].forEach((el) => el.addEventListener("input", apply));
+  // pre-select a country when arriving from a /pays card (/deputes?pays=FR)
+  const prefPays = new URLSearchParams(location.search).get("pays");
+  if (prefPays && [...fd.options].some((o) => o.value === prefPays)) fd.value = prefPays;
   apply();
 };
 
@@ -512,19 +515,21 @@ V.groups = async (root) => {
 V.pays = async (root) => {
   setMeta(t("pays.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/pays");
   const { pays } = await STD.getJSON("/api/pays");
-  const maxN = Math.max(...pays.map((p) => p.n));
   const render = (arr) => arr.map((p) => `
-    <div class="card pays-card">
+    <a class="card pays-card" href="/deputes?pays=${esc(p.code)}" data-link>
       <div class="pays-top"><span class="pays-flag">${esc(p.flag)}</span>
         <span class="pays-name">${esc(p.label.replace(p.flag, "").trim())}</span>
-        ${p.topGroupe ? `<span class="chip pays-grp">${esc(p.topGroupe)}</span>` : ""}</div>
+        <span class="pays-arrow">→</span></div>
       <div class="pays-metrics">
         <div><b>${p.n}</b><span>${esc(t("pays.members"))}</span></div>
         <div><b style="color:${STD.presenceColor(p.presenceMoyenne)}">${p.presenceMoyenne}%</b><span>${esc(t("pays.presence"))}</span></div>
         ${p.loyaltyMoyenne != null ? `<div><b>${p.loyaltyMoyenne}%</b><span>${esc(t("pays.loyalty"))}</span></div>` : ""}
       </div>
-      <div class="bar"><i style="width:${Math.round((p.n / maxN) * 100)}%;background:var(--bleu)"></i></div>
-    </div>`).join("");
+      <div class="pays-groups" title="${esc((p.groupes || []).map((g) => g.sigle + " " + g.n).join(" · "))}">
+        ${(p.groupes || []).map((g) => `<i style="width:${(g.n / p.n) * 100}%;background:${esc(g.color)}"></i>`).join("")}
+      </div>
+      <div class="pays-glegend">${(p.groupes || []).slice(0, 5).map((g) => `<span><i style="background:${esc(g.color)}"></i>${esc(g.sigle)} ${g.n}</span>`).join("")}</div>
+    </a>`).join("");
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
     <div class="sec-head"><h2>${esc(t("pays.title"))}</h2>
       <div class="pays-sort">

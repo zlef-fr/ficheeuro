@@ -383,3 +383,14 @@ footer.foot .fi { display: flex; justify-content: space-between; gap: 16px; flex
 .pays-metrics { display: flex; gap: 22px; margin: 14px 0 12px; }
 .pays-metrics b { font-size: 22px; font-weight: 850; letter-spacing: -.5px; }
 .pays-metrics span { display: block; font-size: 11.5px; color: var(--muted); }
+
+/* ── Pays cards: clickable + group breakdown ────────────────────────────── */
+a.pays-card { display: block; color: var(--ink); transition: transform .14s, box-shadow .16s, border-color .16s; }
+a.pays-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--line-2); text-decoration: none; }
+.pays-arrow { margin-left: auto; color: var(--faint); font-weight: 800; font-size: 18px; }
+a.pays-card:hover .pays-arrow { color: var(--bleu); }
+.pays-groups { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--bg-2); margin-top: 4px; }
+.pays-groups i { display: block; height: 100%; }
+.pays-glegend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; }
+.pays-glegend span { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+.pays-glegend i { width: 9px; height: 9px; border-radius: 2px; }
