@@ -73,6 +73,7 @@ const server = http.createServer((req, res) => {
 
     if (p === "/api/deputes") return json(res, { meta: data.store.meta, deputes: data.store.deputes });
     if (p === "/api/groupes") return json(res, { groupes: data.store.groupes });
+    if (p === "/api/pays") return json(res, { pays: data.store.pays });
     if (p === "/api/stats") return json(res, data.store.stats);
     if (p === "/api/scrutins") return json(res, { scrutins: data.store.scrutins });
     if (p === "/api/meta") return json(res, data.store.meta);

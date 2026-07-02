@@ -508,6 +508,39 @@ V.groups = async (root) => {
   </div></section>`;
 };
 
+// ── PAYS (per-country stats) ──────────────────────────────────────────────
+V.pays = async (root) => {
+  setMeta(t("pays.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/pays");
+  const { pays } = await STD.getJSON("/api/pays");
+  const maxN = Math.max(...pays.map((p) => p.n));
+  const render = (arr) => arr.map((p) => `
+    <div class="card pays-card">
+      <div class="pays-top"><span class="pays-flag">${esc(p.flag)}</span>
+        <span class="pays-name">${esc(p.label.replace(p.flag, "").trim())}</span>
+        ${p.topGroupe ? `<span class="chip pays-grp">${esc(p.topGroupe)}</span>` : ""}</div>
+      <div class="pays-metrics">
+        <div><b>${p.n}</b><span>${esc(t("pays.members"))}</span></div>
+        <div><b style="color:${STD.presenceColor(p.presenceMoyenne)}">${p.presenceMoyenne}%</b><span>${esc(t("pays.presence"))}</span></div>
+        ${p.loyaltyMoyenne != null ? `<div><b>${p.loyaltyMoyenne}%</b><span>${esc(t("pays.loyalty"))}</span></div>` : ""}
+      </div>
+      <div class="bar"><i style="width:${Math.round((p.n / maxN) * 100)}%;background:var(--bleu)"></i></div>
+    </div>`).join("");
+  root.innerHTML = `<section class="block fade-in"><div class="wrap">
+    <div class="sec-head"><h2>${esc(t("pays.title"))}</h2>
+      <div class="pays-sort">
+        <button class="pays-sb active" data-k="n">${esc(t("pays.by_seats"))}</button>
+        <button class="pays-sb" data-k="presenceMoyenne">${esc(t("pays.by_turnout"))}</button>
+      </div></div>
+    <div class="pays-grid" id="pays-grid">${render(pays)}</div>
+  </div></section>`;
+  const grid = root.querySelector("#pays-grid");
+  root.querySelectorAll(".pays-sb").forEach((b) => b.addEventListener("click", () => {
+    root.querySelectorAll(".pays-sb").forEach((x) => x.classList.toggle("active", x === b));
+    const k = b.dataset.k;
+    grid.innerHTML = render([...pays].sort((a, z) => z[k] - a[k]));
+  }));
+};
+
 // ── METHODO ───────────────────────────────────────────────────────────────
 V.methodo = async (root) => {
   setMeta(t("methodo.title") + " — FicheEurodéputé.fr", t("meta.sub"), "https://eu.fichedepute.fr/methode");

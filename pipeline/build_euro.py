@@ -188,6 +188,28 @@ for a in gstats.values():
 groupes.sort(key=lambda a: -a["n"])
 json.dump({"groupes": groupes}, open(os.path.join(OUT, "groupes.json"), "w"), ensure_ascii=False, separators=(",", ":"))
 
+# ── per-country stats ─────────────────────────────────────────────────────
+pstats = {}
+for x in light:
+    a = pstats.setdefault(x["dep"], {"code": x["dep"], "label": x["depNom"], "flag": x.get("flag", ""),
+                                     "n": 0, "sp": 0.0, "pp": 0.0, "loy": 0.0, "nloy": 0,
+                                     "grp": collections.Counter()})
+    a["n"] += 1; a["sp"] += x["presence"]; a["pp"] += x["participation"]; a["grp"][x["groupe"]] += 1
+    if x["loyalty"] is not None:
+        a["loy"] += x["loyalty"]; a["nloy"] += 1
+pays = []
+for a in pstats.values():
+    a["presenceMoyenne"] = round(a["sp"] / a["n"], 1)
+    a["participationMoyenne"] = round(a["pp"] / a["n"], 1)
+    a["loyaltyMoyenne"] = round(a["loy"] / a["nloy"], 1) if a["nloy"] else None
+    a["topGroupe"] = a["grp"].most_common(1)[0][0] if a["grp"] else None
+    for k in ("sp", "pp", "loy", "nloy", "grp"):
+        del a[k]
+    pays.append(a)
+pays.sort(key=lambda a: -a["n"])
+json.dump({"pays": pays}, open(os.path.join(OUT, "pays.json"), "w"), ensure_ascii=False, separators=(",", ":"))
+print("· %d pays" % len(pays), file=sys.stderr)
+
 def top(k, rev, n=20):
     return sorted(light, key=lambda x: x[k], reverse=rev)[:n]
 wl = [x for x in light if x["loyalty"] is not None]

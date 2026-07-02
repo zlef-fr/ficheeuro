@@ -70,6 +70,7 @@ const routes = [
   { re: /^\/depute\/([^/]+)\/?$/, view: "fiche" },
   { re: /^\/classements\/?$/, view: "rankings" },
   { re: /^\/groupes\/?$/, view: "groups" },
+  { re: /^\/pays\/?$/, view: "pays" },
   { re: /^\/jeu\/?$/, view: "game" },
   { re: /^\/methode\/?$/, view: "methodo" },
 ];
