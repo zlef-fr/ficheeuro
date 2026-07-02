@@ -1,5 +1,7 @@
 # FicheEurodéputé.fr
 
+![views](https://assets.zlef.fr/badge/views/zlef-fr/ficheeuro.svg)
+
 La **fiche vivante** de chaque eurodéputé·e du Parlement européen (mandat 2024-2029) —
 participation aux votes, votes pour/contre/abstention, loyauté au groupe européen — en
 clair et 100 % sourcé. Membre de la famille [FicheDéputé.fr](https://fichedepute.fr).
