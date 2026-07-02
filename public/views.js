@@ -122,7 +122,7 @@ V.list = async (root) => {
     .sort((a, b) => a[0].localeCompare(b[0], "fr", { numeric: true }));
 
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
-    <div class="sec-head"><h2>${esc(t("list.title"))}</h2></div>
+    <div class="sec-head"><h1>${esc(t("list.title"))}</h1></div>
     <div class="filters">
       <input id="f-q" type="search" placeholder="${esc(t("search.placeholder"))}" style="flex:1;min-width:200px">
       <select id="f-g"><option value="">${esc(t("list.filter.group"))}</option>${groups.map((g) => `<option value="${esc(g)}">${esc(g)}</option>`).join("")}</select>
@@ -322,7 +322,7 @@ V.rankings = async (root) => {
         <span class="val" style="color:${colorMode === "group" ? esc(d.groupeColor) : STD.presenceColor(d[field])}">${d[field].toFixed(1)}%</span></a>`).join("")}</div>
     </div>`;
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
-    <div class="sec-head"><h2>${esc(t("rank.title"))}</h2></div>
+    <div class="sec-head"><h1>${esc(t("rank.title"))}</h1></div>
     <div class="grid-2">
       <div>${tbl(t("rank.assidus"), stats.plusAssidus, "presence")}</div>
       <div>${tbl(t("rank.absents"), stats.plusAbsents, "presence")}</div>
@@ -495,7 +495,7 @@ V.groups = async (root) => {
   setMeta(t("groups.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/groupes");
   const { groupes } = await STD.getJSON("/api/groupes");
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
-    <div class="sec-head"><h2>${esc(t("groups.title"))}</h2></div>
+    <div class="sec-head"><h1>${esc(t("groups.title"))}</h1></div>
     <div class="grp-grid">
       ${groupes.slice().sort((a, b) => b.n - a.n).map((g) => `
         <div class="card grp-card" style="border-left-color:${esc(g.color)}">
@@ -531,7 +531,7 @@ V.pays = async (root) => {
       <div class="pays-glegend">${(p.groupes || []).slice(0, 5).map((g) => `<span><i style="background:${esc(g.color)}"></i>${esc(g.sigle)} ${g.n}</span>`).join("")}</div>
     </a>`).join("");
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
-    <div class="sec-head"><h2>${esc(t("pays.title"))}</h2>
+    <div class="sec-head"><h1>${esc(t("pays.title"))}</h1>
       <div class="pays-sort">
         <button class="pays-sb active" data-k="n">${esc(t("pays.by_seats"))}</button>
         <button class="pays-sb" data-k="presenceMoyenne">${esc(t("pays.by_turnout"))}</button>
