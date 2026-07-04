@@ -552,7 +552,7 @@ V.methodo = async (root) => {
   setMeta(t("methodo.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/methode");
   const [meta, faq] = await Promise.all([STD.getJSON("/api/meta"), STD.getJSON("/api/faq").catch(() => ({}))]);
   const d = meta.generatedAt ? new Date(meta.generatedAt).toLocaleDateString(STD.lang, { year: "numeric", month: "long", day: "numeric" }) : "—";
-  const items = (faq[STD.lang] || faq.fr || []);
+  const items = (faq[STD.lang] || faq.en || faq.fr || []);
   const faqHtml = items.length ? `
     <h2 class="faq-title">${esc(t("methodo.faqTitle"))}</h2>
     <div class="faq">
