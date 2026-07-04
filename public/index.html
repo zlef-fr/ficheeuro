@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <!--zlef-seo-->
 <meta charset="UTF-8">
@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;850;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css?v=17">
+<link rel="stylesheet" href="/styles.css?v=18">
 </head>
 <body>
 <header class="top"><div class="wrap top-inner">
@@ -36,33 +36,34 @@
   </a>
   <button class="menu-btn" aria-label="Menu">☰</button>
   <nav class="main">
-    <a href="/deputes" data-link data-view="list" data-i18n="nav.deputes">Eurodéputés</a>
-    <a href="/classements" data-link data-view="rankings" data-i18n="nav.classements">Classements</a>
-    <a href="/groupes" data-link data-view="groups" data-i18n="nav.groupes">Groupes</a>
-    <a href="/pays" data-link data-view="pays" data-i18n="nav.pays">Pays</a>
-    <a href="/jeu" data-link data-view="game" class="nav-game" data-i18n="nav.jeu">Jeu</a>
-    <a href="/methode" data-link data-view="methodo" data-i18n="nav.methodo">Méthode</a>
+    <a href="/deputes" data-link data-view="list" data-i18n="nav.deputes">MEPs</a>
+    <a href="/classements" data-link data-view="rankings" data-i18n="nav.classements">Rankings</a>
+    <a href="/groupes" data-link data-view="groups" data-i18n="nav.groupes">Groups</a>
+    <a href="/pays" data-link data-view="pays" data-i18n="nav.pays">Countries</a>
+    <a href="/jeu" data-link data-view="game" class="nav-game" data-i18n="nav.jeu">Game</a>
+    <a href="/methode" data-link data-view="methodo" data-i18n="nav.methodo">Method</a>
   </nav>
+  <span class="langpick-host" data-langpick></span>
 </div></header>
 
 <main id="app"><div class="wrap"><div class="spinner"></div></div></main>
 
 <footer class="foot"><div class="wrap">
   <div class="fi">
-    <span><span data-i18n="footer.data">Données : Parlement européen (licence Ouverte).</span> ·&nbsp; <a href="/mediakit">Media Kit</a></span>
+    <span><span data-i18n="footer.data">Data: European Parliament (via HowTheyVote.eu, CC-BY).</span> ·&nbsp; <a href="/mediakit">Media Kit</a></span>
     <span class="views-chip" data-views hidden></span>
   </div>
   <div class="foot-credit">
-    <span data-i18n="footer.madeby">Projet indépendant, réalisé avec patriotisme</span>
-    <span class="fr-flag" aria-hidden="true"><i></i><i></i><i></i></span>
-    <span>par <a href="https://zlef.fr">zlef.fr</a></span>
-    <span class="foot-sister">·&nbsp; Aussi&nbsp;: <a href="https://fichedepute.fr">Députés</a> · <a href="https://senat.fichedepute.fr">Sénateurs</a></span>
+    <span data-i18n="footer.madeby">An independent, pro-European project</span>
+    <span aria-hidden="true">🇪🇺</span>
+    <span>by <a href="https://zlef.fr">zlef.fr</a></span>
+    <span class="foot-sister">·&nbsp; Also&nbsp;: <a href="https://fichedepute.fr">French MPs</a> · <a href="https://senat.fichedepute.fr">Senators</a></span>
   </div>
 </div></footer>
 
-<script src="/i18n.js?v=17"></script>
-<script src="/app.js?v=17"></script>
-<script src="/views.js?v=17"></script>
+<script src="/i18n.js?v=18"></script>
+<script src="/app.js?v=18"></script>
+<script src="/views.js?v=18"></script>
 <script>
   document.querySelector(".menu-btn").addEventListener("click", () => document.querySelector("nav.main").classList.toggle("open"));
   STD.boot();

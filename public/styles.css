@@ -409,3 +409,20 @@ a.pays-card:hover .pays-arrow { color: var(--bleu); }
 
 /* vote description (EU: uniquely identifies the vote within a report) */
 .vdesc { font-size: 13px; color: var(--ink-2); margin-top: 2px; font-weight: 500; }
+
+/* Language picker (5 locales — DA global .zl-langpick dropdown) */
+.langpick-host { display: flex; align-items: center; }
+.zl-langpick {
+  appearance: none; -webkit-appearance: none;
+  font: inherit; font-size: 13.5px; font-weight: 600;
+  color: var(--ink-2, #4a5169);
+  background: var(--bg-2, #eef1f8);
+  border: 1px solid transparent; border-radius: 9px;
+  padding: 7px 26px 7px 10px; cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%234a5169' stroke-width='1.6' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 9px center;
+  transition: background-color .16s, box-shadow .16s;
+}
+.zl-langpick:hover { background-color: #e3e8f3; }
+.zl-langpick:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--rouge-soft, #ffe6e6); }
+@media (max-width: 640px) { .zl-langpick { font-size: 12.5px; padding: 6px 24px 6px 9px; } }
