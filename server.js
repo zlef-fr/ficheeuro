@@ -141,22 +141,34 @@ const server = http.createServer((req, res) => {
 
   // ---- dynamic OG share image — PNG (rendered on the fly + cached) or SVG -
   if (url.startsWith("/og/")) {
-    const slug = url.slice("/og/".length).replace(/\.(svg|png).*$/, "");
-    const wantPng = /\.png/.test(url);
-    const light = data.store.bySlug[slug];
-    if (!light) return send(res, 404, "not found");
-    if (!wantPng) {
-      return send(res, 200, og.card(light), { "content-type": MIME[".svg"], "cache-control": "public, max-age=3600" });
+    const wantPng = /\.png(\?|$)/.test(url);
+    let rest = url.slice("/og/".length).split("?")[0].replace(/\.(svg|png)$/, "");
+    // optional locale prefix: /og/<lang>/<slug> (default locale owns the bare /og/<slug>)
+    let lang = locales.DEFAULT;
+    const seg = rest.split("/");
+    if (seg.length > 1 && locales.LOCALES.includes(seg[0])) { lang = seg[0]; rest = seg.slice(1).join("/"); }
+    const slug = rest;
+    // choose the renderer: reserved "default" slug → home/section banner, else a fiche card
+    let svg;
+    if (slug === "default") {
+      svg = og.defaultCard(lang);
+    } else {
+      const light = data.store.bySlug[slug];
+      if (!light) return send(res, 404, "not found");
+      svg = og.card(light, lang);
     }
-    const dir = path.join(VAR, "og");
+    if (!wantPng) {
+      return send(res, 200, svg, { "content-type": MIME[".svg"], "cache-control": "public, max-age=3600" });
+    }
+    const dir = path.join(VAR, "og", lang);
     const file = path.join(dir, slug + ".png");
     return fs.readFile(file, (err, buf) => {
       if (!buf) {
         try {
-          buf = renderPng(og.card(light));
+          buf = renderPng(svg);
         } catch (e) {
           console.error("og png render failed:", e.message);
-          return send(res, 200, og.card(light), { "content-type": MIME[".svg"], "cache-control": "public, max-age=600" });
+          return send(res, 200, svg, { "content-type": MIME[".svg"], "cache-control": "public, max-age=600" });
         }
         fs.mkdir(dir, { recursive: true }, () => fs.writeFile(file, buf, () => {}));
       }
