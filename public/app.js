@@ -1,15 +1,15 @@
 // FicheDéputé.fr — SPA core: i18n, routing, data fetching, shared helpers.
 const STD = (window.STD = {});
 
-// ── i18n & locale routing (5 locales → language picker, DA rule) ──────────
+// ── i18n & locale routing (24 official EU languages → language picker, DA rule) ─
 // The URL is authoritative: the default locale (EN) owns the bare path, every
 // other locale lives under "/<lang>". Resolution order for what to render:
 //   path prefix  →  ?lang=  →  (default). A zl-lang cookie only soft-redirects a
 // returning visitor from the bare default path to their locale (bots carry no
 // cookie, so the canonical stays crawlable).
-const LOCALES = ["en", "fr", "de", "es", "it"];
+const LOCALES = ["bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "ga", "hr", "hu", "it", "lt", "lv", "mt", "nl", "pl", "pt", "ro", "sk", "sl", "sv"];
 const DEFAULT_LANG = "en";
-const LANG_LABEL = { en: "🇬🇧 English", fr: "🇫🇷 Français", de: "🇩🇪 Deutsch", es: "🇪🇸 Español", it: "🇮🇹 Italiano" };
+const LANG_LABEL = { bg: "🇧🇬 Български", cs: "🇨🇿 Čeština", da: "🇩🇰 Dansk", de: "🇩🇪 Deutsch", el: "🇬🇷 Ελληνικά", en: "🇬🇧 English", es: "🇪🇸 Español", et: "🇪🇪 Eesti", fi: "🇫🇮 Suomi", fr: "🇫🇷 Français", ga: "🇮🇪 Gaeilge", hr: "🇭🇷 Hrvatski", hu: "🇭🇺 Magyar", it: "🇮🇹 Italiano", lt: "🇱🇹 Lietuvių", lv: "🇱🇻 Latviešu", mt: "🇲🇹 Malti", nl: "🇳🇱 Nederlands", pl: "🇵🇱 Polski", pt: "🇵🇹 Português", ro: "🇷🇴 Română", sk: "🇸🇰 Slovenčina", sl: "🇸🇮 Slovenščina", sv: "🇸🇪 Svenska" };
 STD.LOCALES = LOCALES;
 STD.LANG_LABEL = LANG_LABEL;
 function cookie(name) {
@@ -175,7 +175,7 @@ STD.track = async (path) => {
 };
 
 STD.render = render;
-// Build the global language picker (5 locales → dropdown, per DA).
+// Build the global language picker (24 official EU languages → dropdown, per DA).
 STD.mountLangpick = () => {
   const host = document.querySelector("[data-langpick]");
   if (!host || host.querySelector(".zl-langpick")) return;
