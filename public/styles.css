@@ -415,7 +415,7 @@ a.pays-card:hover .pays-arrow { color: var(--bleu); }
 /* vote description (EU: uniquely identifies the vote within a report) */
 .vdesc { font-size: 13px; color: var(--ink-2); margin-top: 2px; font-weight: 500; }
 
-/* Language picker (5 locales — DA global .zl-langpick dropdown) */
+/* Language picker (24 official EU languages — DA global .zl-langpick dropdown) */
 .langpick-host { display: flex; align-items: center; }
 .zl-langpick {
   appearance: none; -webkit-appearance: none;
