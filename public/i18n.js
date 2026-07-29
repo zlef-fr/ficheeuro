@@ -2,6 +2,9 @@
 // audience); the other 23 official EU languages are full translations. 24 locales → a language picker is shown (DA rule). Missing keys fall back to EN.
 window.STD_I18N = {
   en: {
+    "404.title": "Page not found",
+    "404.lead": "This page does not exist. Search the 719 MEPs of the European Parliament instead.",
+    "404.cta": "All MEPs",
     "meta.tagline": "The living record of your MEP",
     "meta.sub": "Turnout, votes and absences at the European Parliament — in plain language, fully sourced.",
     "nav.deputes": "MEPs",
@@ -132,6 +135,9 @@ window.STD_I18N = {
     "loading": "Loading…",
   },
   fr: {
+    "404.title": "Page introuvable",
+    "404.lead": "Cette page n'existe pas. Cherchez plutôt parmi les 719 eurodéputés du Parlement européen.",
+    "404.cta": "Tous les eurodéputés",
     "meta.tagline": "La fiche vivante de votre eurodéputé·e",
     "meta.sub": "Participation, votes et absences au Parlement européen — en clair, et 100 % sourcé.",
     "nav.deputes": "Eurodéputés",
@@ -262,6 +268,9 @@ window.STD_I18N = {
     "loading": "Chargement…",
   },
   de: {
+    "404.title": "Seite nicht gefunden",
+    "404.lead": "Diese Seite existiert nicht. Suchen Sie stattdessen unter den 719 Abgeordneten des Europäischen Parlaments.",
+    "404.cta": "Alle Abgeordneten",
     "meta.tagline": "Das lebendige Profil Ihres/Ihrer Europaabgeordneten",
     "meta.sub": "Teilnahme, Abstimmungen und Abwesenheiten im Europäischen Parlament — verständlich und vollständig belegt.",
     "nav.deputes": "Abgeordnete",
@@ -392,6 +401,9 @@ window.STD_I18N = {
     "loading": "Wird geladen…",
   },
   es: {
+    "404.title": "Página no encontrada",
+    "404.lead": "Esta página no existe. Busque entre los 719 eurodiputados del Parlamento Europeo.",
+    "404.cta": "Todos los eurodiputados",
     "meta.tagline": "La ficha viva de tu eurodiputado/a",
     "meta.sub": "Participación, votos y ausencias en el Parlamento Europeo — en claro y con fuentes oficiales.",
     "nav.deputes": "Eurodiputados",
@@ -522,6 +534,9 @@ window.STD_I18N = {
     "loading": "Cargando…",
   },
   it: {
+    "404.title": "Pagina non trovata",
+    "404.lead": "Questa pagina non esiste. Cerca invece tra i 719 eurodeputati del Parlamento europeo.",
+    "404.cta": "Tutti gli eurodeputati",
     "meta.tagline": "La scheda viva del tuo eurodeputato",
     "meta.sub": "Partecipazione, voti e assenze al Parlamento europeo — in chiaro e con fonti ufficiali.",
     "nav.deputes": "Eurodeputati",
@@ -652,6 +667,9 @@ window.STD_I18N = {
     "loading": "Caricamento…",
   },
   bg: {
+    "404.title": "Страницата не е намерена",
+    "404.lead": "Тази страница не съществува. Потърсете сред 719 евродепутати в Европейския парламент.",
+    "404.cta": "Всички евродепутати",
     "meta.tagline": "Живият профил на вашия евродепутат",
     "meta.sub": "Участие, гласувания и отсъствия в Европейския парламент — на ясен език и с проверими източници.",
     "nav.deputes": "Евродепутати",
@@ -782,6 +800,9 @@ window.STD_I18N = {
     "loading": "Зареждане…",
   },
   cs: {
+    "404.title": "Stránka nenalezena",
+    "404.lead": "Tato stránka neexistuje. Hledejte raději mezi 719 poslanci Evropského parlamentu.",
+    "404.cta": "Všichni poslanci",
     "meta.tagline": "Živá karta vašeho europoslance",
     "meta.sub": "Účast, hlasování a absence v Evropském parlamentu — srozumitelně a s plným uvedením zdrojů.",
     "nav.deputes": "Europoslanci",
@@ -912,6 +933,9 @@ window.STD_I18N = {
     "loading": "Načítání…",
   },
   da: {
+    "404.title": "Siden blev ikke fundet",
+    "404.lead": "Denne side findes ikke. Søg i stedet blandt Europa-Parlamentets 719 medlemmer.",
+    "404.cta": "Alle medlemmer",
     "meta.tagline": "Den levende profil af dit medlem af Europa-Parlamentet",
     "meta.sub": "Deltagelse, afstemninger og fravær i Europa-Parlamentet — i et klart sprog og med fuld kildeangivelse.",
     "nav.deputes": "MEP'er",
@@ -1042,6 +1066,9 @@ window.STD_I18N = {
     "loading": "Indlæser…",
   },
   el: {
+    "404.title": "Η σελίδα δεν βρέθηκε",
+    "404.lead": "Αυτή η σελίδα δεν υπάρχει. Αναζητήστε ανάμεσα στους 719 ευρωβουλευτές του Ευρωπαϊκού Κοινοβουλίου.",
+    "404.cta": "Όλοι οι ευρωβουλευτές",
     "meta.tagline": "Η ζωντανή καρτέλα του/της ευρωβουλευτή σας",
     "meta.sub": "Συμμετοχή, ψήφοι και απουσίες στο Ευρωπαϊκό Κοινοβούλιο — με απλά λόγια και πλήρως τεκμηριωμένα.",
     "nav.deputes": "Ευρωβουλευτές",
@@ -1172,6 +1199,9 @@ window.STD_I18N = {
     "loading": "Φόρτωση…",
   },
   et: {
+    "404.title": "Lehte ei leitud",
+    "404.lead": "Seda lehte ei ole olemas. Otsige hoopis Euroopa Parlamendi 719 saadiku seast.",
+    "404.cta": "Kõik saadikud",
     "meta.tagline": "Teie eurosaadiku elav profiil",
     "meta.sub": "Osalus, hääletused ja puudumised Euroopa Parlamendis — lihtsas keeles ja täielikult allikaviidatud.",
     "nav.deputes": "Eurosaadikud",
@@ -1302,6 +1332,9 @@ window.STD_I18N = {
     "loading": "Laadimine…",
   },
   fi: {
+    "404.title": "Sivua ei löytynyt",
+    "404.lead": "Tätä sivua ei ole olemassa. Etsi sen sijaan Euroopan parlamentin 719 mepin joukosta.",
+    "404.cta": "Kaikki mepit",
     "meta.tagline": "Meppisi elävä profiili",
     "meta.sub": "Osallistuminen, äänet ja poissaolot Euroopan parlamentissa — selkeästi ja täysin lähteytettynä.",
     "nav.deputes": "Mepit",
@@ -1432,6 +1465,9 @@ window.STD_I18N = {
     "loading": "Ladataan…",
   },
   ga: {
+    "404.title": "Leathanach gan aimsiú",
+    "404.lead": "Níl an leathanach seo ann. Cuardaigh i measc 719 Feisire de Pharlaimint na hEorpa ina ionad.",
+    "404.cta": "Gach Feisire",
     "meta.tagline": "Taifead beo d'Fheisire",
     "meta.sub": "Rannpháirtíocht, vótaí agus asláithreachtaí i bParlaimint na hEorpa — i dteanga shoiléir, foinsithe go hiomlán.",
     "nav.deputes": "Feisirí",
@@ -1562,6 +1598,9 @@ window.STD_I18N = {
     "loading": "Ag lódáil…",
   },
   hr: {
+    "404.title": "Stranica nije pronađena",
+    "404.lead": "Ova stranica ne postoji. Umjesto toga pretražite 719 zastupnika Europskog parlamenta.",
+    "404.cta": "Svi zastupnici",
     "meta.tagline": "Živi profil vašeg eurozastupnika/ce",
     "meta.sub": "Sudjelovanje, glasovi i izostanci u Europskom parlamentu — jasno i u potpunosti potkrijepljeno izvorima.",
     "nav.deputes": "Eurozastupnici",
@@ -1692,6 +1731,9 @@ window.STD_I18N = {
     "loading": "Učitavanje…",
   },
   hu: {
+    "404.title": "Az oldal nem található",
+    "404.lead": "Ez az oldal nem létezik. Keressen inkább az Európai Parlament 719 képviselője között.",
+    "404.cta": "Összes képviselő",
     "meta.tagline": "Az Ön EP-képviselőjének élő adatlapja",
     "meta.sub": "Részvétel, szavazatok és távollétek az Európai Parlamentben — közérthetően és teljes körű forrásmegjelöléssel.",
     "nav.deputes": "EP-képviselők",
@@ -1822,6 +1864,9 @@ window.STD_I18N = {
     "loading": "Betöltés…",
   },
   lt: {
+    "404.title": "Puslapis nerastas",
+    "404.lead": "Šio puslapio nėra. Verčiau ieškokite tarp 719 Europos Parlamento narių.",
+    "404.cta": "Visi nariai",
     "meta.tagline": "Gyvoji jūsų europarlamentaro (-ės) kortelė",
     "meta.sub": "Dalyvavimas, balsavimai ir neatvykimai Europos Parlamente — aiškia kalba ir su nurodytais šaltiniais.",
     "nav.deputes": "Europarlamentarai",
@@ -1952,6 +1997,9 @@ window.STD_I18N = {
     "loading": "Įkeliama…",
   },
   lv: {
+    "404.title": "Lapa nav atrasta",
+    "404.lead": "Šī lapa neeksistē. Meklējiet starp 719 Eiropas Parlamenta deputātiem.",
+    "404.cta": "Visi deputāti",
     "meta.tagline": "Jūsu Eiropas Parlamenta deputāta dzīvais profils",
     "meta.sub": "Līdzdalība, balsojumi un prombūtne Eiropas Parlamentā — vienkāršā valodā un ar oficiāliem avotiem.",
     "nav.deputes": "Deputāti",
@@ -2082,6 +2130,9 @@ window.STD_I18N = {
     "loading": "Notiek ielāde…",
   },
   mt: {
+    "404.title": "Il-paġna ma nstabitx",
+    "404.lead": "Din il-paġna ma teżistix. Fittex minflok fost il-719 MPE tal-Parlament Ewropew.",
+    "404.cta": "Il-MPE kollha",
     "meta.tagline": "Il-profil ħaj tal-MPE tiegħek",
     "meta.sub": "Parteċipazzjoni, voti u assenzi fil-Parlament Ewropew — b'lingwaġġ ċar, b'sorsi kompluti.",
     "nav.deputes": "MPE",
@@ -2212,6 +2263,9 @@ window.STD_I18N = {
     "loading": "Qed jitgħabba…",
   },
   nl: {
+    "404.title": "Pagina niet gevonden",
+    "404.lead": "Deze pagina bestaat niet. Zoek in plaats daarvan tussen de 719 leden van het Europees Parlement.",
+    "404.cta": "Alle leden",
     "meta.tagline": "Het levende profiel van uw europarlementariër",
     "meta.sub": "Deelname, stemmingen en afwezigheden in het Europees Parlement — in begrijpelijke taal en volledig met bronnen.",
     "nav.deputes": "Europarlementariërs",
@@ -2342,6 +2396,9 @@ window.STD_I18N = {
     "loading": "Laden…",
   },
   pl: {
+    "404.title": "Nie znaleziono strony",
+    "404.lead": "Ta strona nie istnieje. Poszukaj wśród 719 posłów do Parlamentu Europejskiego.",
+    "404.cta": "Wszyscy posłowie",
     "meta.tagline": "Żywa karta Twojego europosła",
     "meta.sub": "Frekwencja, głosowania i nieobecności w Parlamencie Europejskim — prostym językiem i w pełni udokumentowane.",
     "nav.deputes": "Europosłowie",
@@ -2472,6 +2529,9 @@ window.STD_I18N = {
     "loading": "Ładowanie…",
   },
   pt: {
+    "404.title": "Página não encontrada",
+    "404.lead": "Esta página não existe. Procure entre os 719 deputados ao Parlamento Europeu.",
+    "404.cta": "Todos os deputados",
     "meta.tagline": "A ficha viva do seu eurodeputado/a",
     "meta.sub": "Participação, votos e ausências no Parlamento Europeu — de forma clara e com fontes oficiais.",
     "nav.deputes": "Eurodeputados",
@@ -2602,6 +2662,9 @@ window.STD_I18N = {
     "loading": "A carregar…",
   },
   ro: {
+    "404.title": "Pagina nu a fost găsită",
+    "404.lead": "Această pagină nu există. Căutați printre cei 719 deputați în Parlamentul European.",
+    "404.cta": "Toți deputații",
     "meta.tagline": "Fișa vie a eurodeputatului/ei dumneavoastră",
     "meta.sub": "Participare, voturi și absențe la Parlamentul European — pe înțelesul tuturor și 100 % din surse oficiale.",
     "nav.deputes": "Eurodeputați",
@@ -2732,6 +2795,9 @@ window.STD_I18N = {
     "loading": "Se încarcă…",
   },
   sk: {
+    "404.title": "Stránka sa nenašla",
+    "404.lead": "Táto stránka neexistuje. Hľadajte radšej medzi 719 poslancami Európskeho parlamentu.",
+    "404.cta": "Všetci poslanci",
     "meta.tagline": "Živá karta vášho europoslanca",
     "meta.sub": "Účasť, hlasovania a absencie v Európskom parlamente — zrozumiteľne a s uvedením oficiálnych zdrojov.",
     "nav.deputes": "Europoslanci",
@@ -2862,6 +2928,9 @@ window.STD_I18N = {
     "loading": "Načítava sa…",
   },
   sl: {
+    "404.title": "Strani ni mogoče najti",
+    "404.lead": "Ta stran ne obstaja. Raje poiščite med 719 poslanci Evropskega parlamenta.",
+    "404.cta": "Vsi poslanci",
     "meta.tagline": "Živi profil vašega evropskega poslanca/-ke",
     "meta.sub": "Udeležba, glasovanja in odsotnosti v Evropskem parlamentu — razumljivo in v celoti podprto z viri.",
     "nav.deputes": "Poslanci",
@@ -2992,6 +3061,9 @@ window.STD_I18N = {
     "loading": "Nalaganje…",
   },
   sv: {
+    "404.title": "Sidan hittades inte",
+    "404.lead": "Den här sidan finns inte. Sök i stället bland Europaparlamentets 719 ledamöter.",
+    "404.cta": "Alla ledamöter",
     "meta.tagline": "Den levande profilen för din Europaparlamentariker",
     "meta.sub": "Deltagande, omröstningar och frånvaro i Europaparlamentet – i klartext och med fullständiga källor.",
     "nav.deputes": "Ledamöter",
