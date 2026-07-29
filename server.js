@@ -56,13 +56,21 @@ function sendShell(res, pathname) {
   );
 }
 
+// A real route never has a dot-segment (/.env, /.git/HEAD, /.vscode/sftp.json) or a file
+// extension (that is a missing asset). Handing those to the SPA shell answers 200, which
+// vulnerability scanners read as "this path exists" — so they keep coming back.
+const NOT_A_ROUTE = /(^|\/)\.[^/]|\.[a-z0-9]{2,5}$/i;
+
 function serveStatic(req, res, urlPath) {
   const pathname = decodeURIComponent(urlPath.split("?")[0]);
   if (pathname === "/") return sendShell(res, "/");
   const file = path.join(PUB, path.normalize(pathname).replace(/^(\.\.[/\\])+/, ""));
   if (!file.startsWith(PUB)) return send(res, 403, "forbidden");
   fs.readFile(file, (err, buf) => {
-    if (err) return sendShell(res, pathname); // SPA fallback → client router
+    if (err) {
+      if (NOT_A_ROUTE.test(pathname)) return send(res, 404, "not found", { "content-type": "text/plain; charset=utf-8" });
+      return sendShell(res, pathname); // SPA fallback → client router
+    }
     const ext = path.extname(file);
     const cache = ext === ".html" ? "no-cache" : "public, max-age=3600";
     send(res, 200, buf, { "content-type": MIME[ext] || "application/octet-stream", "cache-control": cache });
