@@ -49,11 +49,13 @@ function json(res, obj, code = 200, cache = "public, max-age=300") {
 }
 
 function sendShell(res, pathname) {
-  // serve index.html with per-route <head> meta injected for crawlers
-  fs.readFile(path.join(PUB, "index.html"), "utf8", (e, html) =>
-    e ? send(res, 404, "not found")
-      : send(res, 200, seo.injectMeta(html, pathname), { "content-type": MIME[".html"], "cache-control": "no-cache" })
-  );
+  // serve index.html with per-route <head> meta injected for crawlers;
+  // unknown routes come back with a real 404 status (no soft-404s)
+  fs.readFile(path.join(PUB, "index.html"), "utf8", (e, html) => {
+    if (e) return send(res, 404, "not found");
+    const out = seo.injectMeta(html, pathname);
+    send(res, out.status, out.html, { "content-type": MIME[".html"], "cache-control": "no-cache" });
+  });
 }
 
 // A real route never has a dot-segment (/.env, /.git/HEAD, /.vscode/sftp.json) or a file

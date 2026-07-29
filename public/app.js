@@ -130,7 +130,9 @@ function highlightNav(view) {
 async function render() {
   const path = STD.stripLocale(location.pathname);
   const root = document.getElementById("app");
-  let match = routes.find((r) => r.re.test(path)) || routes[0];
+  // No route matches → the not-found view. Falling back to home here used to make a
+  // dead URL look like a working page (the server already answers 404 for it).
+  const match = routes.find((r) => r.re.test(path)) || { re: /.*/, view: "notFound" };
   const m = path.match(match.re);
   highlightNav(match.view);
   window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
@@ -139,6 +141,9 @@ async function render() {
     await STD.views[match.view](root, m);
     STD.track(path);
   } catch (e) {
+    // A missing record (the API 404s on an unknown slug) is a not-found page, not an
+    // error page — the server already answered 404 for this URL.
+    if (String(e.message) === "404") return STD.views.notFound(root);
     console.error(e);
     root.innerHTML = `<div class="wrap block"><div class="prose"><h1>Oups</h1><p>${STD.esc(String(e))}</p><a class="btn btn-primary" href="/" data-link>${STD.t("fiche.back")}</a></div></div>`;
   }

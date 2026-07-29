@@ -570,3 +570,14 @@ V.methodo = async (root) => {
     </div>
   </div></section>`;
 };
+
+// The route that does not exist. The server already 404s the shell and SSRs this same
+// copy; this is the client-side twin, for when the SPA navigates onto a dead URL.
+V.notFound = async (root) => {
+  setMeta(`${t("404.title")} — FicheDéputé.eu`, t("404.lead"), null);
+  root.innerHTML = `<section class="wrap block reveal"><div class="prose">
+    <h1>${esc(t("404.title"))}</h1>
+    <p>${esc(t("404.lead"))}</p>
+    <p><a class="btn btn-primary" href="/deputes" data-link>${esc(t("404.cta"))}</a></p>
+  </div></section>`;
+};
