@@ -128,7 +128,7 @@
         "repo": "HowTheyVote/data",
         "asset": "member_votes.csv.gz"
       },
-      "ttl": "3h"
+      "ttl": "1h"
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
