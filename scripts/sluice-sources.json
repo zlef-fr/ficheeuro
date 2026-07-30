@@ -6,13 +6,23 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "members.csv.gz",
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "members.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "members.csv.gz"
+      }
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "meps", "votes", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "meps",
+      "votes",
+      "opendata"
+    ]
   },
   {
     "id": "eu-howtheyvote-groups",
@@ -20,13 +30,22 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "groups.csv.gz",
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "groups.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "groups.csv.gz"
+      }
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "groupes", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "groupes",
+      "opendata"
+    ]
   },
   {
     "id": "eu-howtheyvote-group-memberships",
@@ -34,13 +53,22 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "group_memberships.csv.gz",
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "group_memberships.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "group_memberships.csv.gz"
+      }
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "groupes", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "groupes",
+      "opendata"
+    ]
   },
   {
     "id": "eu-howtheyvote-countries",
@@ -48,13 +76,22 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "countries.csv.gz",
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "countries.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "countries.csv.gz"
+      }
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "pays", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "pays",
+      "opendata"
+    ]
   },
   {
     "id": "eu-howtheyvote-votes",
@@ -62,13 +99,22 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "votes.csv.gz",
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "votes.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "votes.csv.gz"
+      }
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "votes", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "votes",
+      "opendata"
+    ]
   },
   {
     "id": "eu-howtheyvote-member-votes",
@@ -77,13 +123,22 @@
     "adapter": "http-artifact",
     "options": {
       "filename": "member_votes.csv.gz",
-      "keep": 1,
-      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "member_votes.csv.gz" }
+      "resolve": {
+        "type": "github-latest-release",
+        "repo": "HowTheyVote/data",
+        "asset": "member_votes.csv.gz"
+      },
+      "ttl": "3h"
     },
     "refresh": "24h",
     "license": "CC BY 4.0 (HowTheyVote.eu)",
     "homepage": "https://howtheyvote.eu/",
     "attribution": "HowTheyVote.eu / Parlement européen",
-    "tags": ["europe", "parlement-europeen", "votes", "opendata"]
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "votes",
+      "opendata"
+    ]
   }
 ]
