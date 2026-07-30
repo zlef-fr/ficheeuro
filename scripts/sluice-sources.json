@@ -1,0 +1,89 @@
+[
+  {
+    "id": "eu-howtheyvote-members",
+    "name": "HowTheyVote.eu — members (bulk export)",
+    "description": "Eurodéputés (MEPs) du Parlement européen. La release GitHub la plus récente est résolue au moment du fetch: tag inchangé = contenu inchangé, rien n'est retéléchargé.",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "members.csv.gz",
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "members.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "meps", "votes", "opendata"]
+  },
+  {
+    "id": "eu-howtheyvote-groups",
+    "name": "HowTheyVote.eu — groups (bulk export)",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "groups.csv.gz",
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "groups.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "groupes", "opendata"]
+  },
+  {
+    "id": "eu-howtheyvote-group-memberships",
+    "name": "HowTheyVote.eu — group_memberships (bulk export)",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "group_memberships.csv.gz",
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "group_memberships.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "groupes", "opendata"]
+  },
+  {
+    "id": "eu-howtheyvote-countries",
+    "name": "HowTheyVote.eu — countries (bulk export)",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "countries.csv.gz",
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "countries.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "pays", "opendata"]
+  },
+  {
+    "id": "eu-howtheyvote-votes",
+    "name": "HowTheyVote.eu — votes (bulk export)",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "votes.csv.gz",
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "votes.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "votes", "opendata"]
+  },
+  {
+    "id": "eu-howtheyvote-member-votes",
+    "name": "HowTheyVote.eu — member_votes (bulk export, ~67 Mo gz)",
+    "description": "Position de vote de chaque eurodéputé sur chaque scrutin. Le plus gros fichier du jeu.",
+    "adapter": "http-artifact",
+    "options": {
+      "filename": "member_votes.csv.gz",
+      "keep": 1,
+      "resolve": { "type": "github-latest-release", "repo": "HowTheyVote/data", "asset": "member_votes.csv.gz" }
+    },
+    "refresh": "24h",
+    "license": "CC BY 4.0 (HowTheyVote.eu)",
+    "homepage": "https://howtheyvote.eu/",
+    "attribution": "HowTheyVote.eu / Parlement européen",
+    "tags": ["europe", "parlement-europeen", "votes", "opendata"]
+  }
+]
