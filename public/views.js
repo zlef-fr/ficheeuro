@@ -22,7 +22,10 @@ function wireSearch(input, box) {
     const q = input.value.trim();
     if (q.length < 2) return close();
     timer = setTimeout(async () => {
-      const { results } = await STD.getJSON("/api/search?q=" + encodeURIComponent(q));
+      const [{ results }] = await Promise.all([
+        STD.getJSON("/api/search?q=" + encodeURIComponent(q)),
+        STD.groupNamesReady,          // so every pill can name its group in the visitor's language
+      ]);
       items = results;
       if (!results.length) { box.innerHTML = `<div class="sr-none">${esc(t("search.none"))}</div>`; return open(); }
       box.innerHTML = results
@@ -116,7 +119,7 @@ V.home = async (root) => {
 // ── LIST ──────────────────────────────────────────────────────────────────
 V.list = async (root) => {
   setMeta(t("list.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/deputes");
-  const { deputes } = await STD.getJSON("/api/deputes");
+  const [{ deputes }] = await Promise.all([STD.getJSON("/api/deputes"), STD.groupNamesReady]);
   const groups = [...new Set(deputes.map((d) => d.groupe))].sort();
   const deps = [...new Map(deputes.filter((d) => d.dep).map((d) => [d.dep, d.depNom])).entries()]
     .sort((a, b) => a[0].localeCompare(b[0], "fr", { numeric: true }));
@@ -125,7 +128,7 @@ V.list = async (root) => {
     <div class="sec-head"><h1>${esc(t("list.title"))}</h1></div>
     <div class="filters">
       <input id="f-q" type="search" placeholder="${esc(t("search.placeholder"))}" style="flex:1;min-width:200px">
-      <select id="f-g"><option value="">${esc(t("list.filter.group"))}</option>${groups.map((g) => `<option value="${esc(g)}">${esc(g)}</option>`).join("")}</select>
+      <select id="f-g"><option value="">${esc(t("list.filter.group"))}</option>${groups.map((g) => { const full = STD.grpName("", STD.GRP_L10N[g]); return `<option value="${esc(g)}">${esc(full ? `${g} · ${full}` : g)}</option>`; }).join("")}</select>
       <select id="f-d"><option value="">${esc(t("list.filter.dep"))}</option>${deps.map(([n, l]) => `<option value="${esc(n)}">${esc(n)} · ${esc(l)}</option>`).join("")}</select>
       <select id="f-s">
         <option value="name">${esc(t("list.sort.name"))}</option>
@@ -145,7 +148,7 @@ V.list = async (root) => {
     let arr = deputes.filter((d) =>
       (!fg.value || d.groupe === fg.value) &&
       (!fd.value || d.dep === fd.value) &&
-      (!q || norm(`${d.prenom} ${d.nom} ${d.depNom}`).includes(q)));
+      (!q || norm(`${d.prenom} ${d.nom} ${d.depNom} ${d.parti || ""}`).includes(q)));
     if (fs.value === "pd") arr = arr.slice().sort((a, b) => b.presence - a.presence);
     else if (fs.value === "pa") arr = arr.slice().sort((a, b) => a.presence - b.presence);
     count.textContent = t("list.count", { n: arr.length });
@@ -153,7 +156,7 @@ V.list = async (root) => {
       ${STD.avatar(d)}
       <div class="meta">
         <div class="nm">${esc(d.prenom)} ${esc(d.nom)}</div>
-        <div class="sub">${esc(STD.circoLabel(d))}</div>
+        <div class="sub">${esc(STD.circoLabel(d))}${d.parti ? ` · ${esc(d.parti)}` : ""}</div>
         <div style="display:flex;align-items:center;gap:8px">
           ${STD.grpPill(d.groupe, d.groupeLibelle, d.groupeColor)}
           <span class="pp" style="color:${STD.presenceColor(d.presence)}">${d.presence.toFixed(0)}%</span>
@@ -201,8 +204,9 @@ V.fiche = async (root, m) => {
         <div class="id" style="flex:1;min-width:220px">
           <h1>${esc(name)}</h1>
           <div class="circo">${esc(STD.circoLabel({ dep: (d.circo || {}).numDepartement, depNom: (d.circo || {}).departement, circo: (d.circo || {}).numCirco }))}</div>
+          <div class="grp-full">${esc(STD.grpName(g.libelle, g.libelleL10n))}${d.parti ? ` · ${esc(t("fiche.party"))} : <b>${esc(d.parti)}</b>` : ""}</div>
           <div class="fiche-badges">
-            ${STD.grpPill(g.sigle, g.libelle, g.color)}
+            ${STD.grpPill(g.sigle, g.libelle, g.color, g.libelleL10n)}
             ${d.rang ? `<span class="chip">${esc(t("fiche.rank", { r: d.rang }))}</span>` : ""}
             <span class="chip" data-views hidden></span>
           </div>
@@ -239,7 +243,8 @@ V.fiche = async (root, m) => {
       <aside style="display:flex;flex-direction:column;gap:16px">
         <div class="card side-card">
           <h3>${esc(t("fiche.group"))}</h3>
-          <div class="kv"><span class="k">${esc(t("fiche.group"))}</span><span class="v">${esc(g.sigle)}</span></div>
+          <div class="kv"><span class="k">${esc(t("fiche.group"))}</span><span class="v">${esc(STD.grpName(g.libelle, g.libelleL10n))} (${esc(g.sigle)})</span></div>
+          ${d.parti ? `<div class="kv"><span class="k">${esc(t("fiche.party"))}</span><span class="v">${esc(d.parti)}</span></div>` : ""}
           ${born ? `<div class="kv"><span class="k">${esc(t("fiche.born"))}</span><span class="v">${esc(born)}</span></div>` : ""}
           ${d.profession ? `<div class="kv"><span class="k">${esc(t("fiche.profession"))}</span><span class="v">${esc(d.profession)}</span></div>` : ""}
           <div class="kv"><span class="k">${esc(t("fiche.ballots"))}</span><span class="v">${d.nPresent} / ${d.nEligible}</span></div>
@@ -445,7 +450,10 @@ V.game = async (root) => {
       const q = input.value.trim();
       if (q.length < 2) return close();
       timer = setTimeout(async () => {
-        const { results } = await STD.getJSON("/api/search?q=" + encodeURIComponent(q));
+        const [{ results }] = await Promise.all([
+        STD.getJSON("/api/search?q=" + encodeURIComponent(q)),
+        STD.groupNamesReady,          // so every pill can name its group in the visitor's language
+      ]);
         if (answered) return;
         if (!results.length) { box.innerHTML = `<div class="sr-none">${esc(t("search.none"))}</div>`; box.hidden = false; return; }
         box.innerHTML = results.map((d) => `<button class="g-sug" data-uid="${esc(d.uid)}">
@@ -501,7 +509,7 @@ V.groups = async (root) => {
       ${groupes.slice().sort((a, b) => b.n - a.n).map((g) => `
         <div class="card grp-card" style="border-left-color:${esc(g.color)}">
           <div class="gt">${esc(g.sigle)}</div>
-          <div class="gsig">${esc(g.libelle)}</div>
+          <div class="gsig">${esc(STD.grpName(g.libelle, g.libelleL10n))}</div>
           <div class="gm">
             <div><div class="n">${g.n}</div><div class="lbl">${esc(t("groups.members", { n: g.n }))}</div></div>
             <div><div class="n" style="color:${STD.presenceColor(g.participationMoyenne)}">${g.participationMoyenne}%</div><div class="lbl">${esc(t("groups.presence"))}</div></div>

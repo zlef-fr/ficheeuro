@@ -1,5 +1,59 @@
 [
   {
+    "id": "eu-parliament-meps-en",
+    "name": "Parlement européen — liste complète des eurodéputés (XML, EN)",
+    "description": "Liste officielle du PE : id, pays, groupe politique ET parti national (« nationalPoliticalGroup »). HowTheyVote ne publie pas le parti national — c'est la seule source qui le donne en masse.",
+    "adapter": "http-artifact",
+    "url": "https://www.europarl.europa.eu/meps/en/full-list/xml",
+    "options": {
+      "filename": "meps-en.xml",
+      "probe": {
+        "type": "http-head"
+      },
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; Sluice/1.0; +https://sluice.zlef.fr)"
+      }
+    },
+    "refresh": "24h",
+    "license": "Décision 2011/833/UE (réutilisation des documents de la Commission/PE)",
+    "homepage": "https://www.europarl.europa.eu/meps/en/full-list/xml",
+    "attribution": "Parlement européen",
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "meps",
+      "partis",
+      "opendata"
+    ]
+  },
+  {
+    "id": "eu-parliament-meps-fr",
+    "name": "Parlement européen — liste complète des eurodéputés (XML, FR)",
+    "description": "Même liste, libellés en français : sert à afficher le nom complet du groupe (« ESN » → « Groupe «L'Europe des nations souveraines» ») dans la langue du visiteur.",
+    "adapter": "http-artifact",
+    "url": "https://www.europarl.europa.eu/meps/fr/full-list/xml",
+    "options": {
+      "filename": "meps-fr.xml",
+      "probe": {
+        "type": "http-head"
+      },
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; Sluice/1.0; +https://sluice.zlef.fr)"
+      }
+    },
+    "refresh": "24h",
+    "license": "Décision 2011/833/UE (réutilisation des documents de la Commission/PE)",
+    "homepage": "https://www.europarl.europa.eu/meps/fr/full-list/xml",
+    "attribution": "Parlement européen",
+    "tags": [
+      "europe",
+      "parlement-europeen",
+      "meps",
+      "groupes",
+      "opendata"
+    ]
+  },
+  {
     "id": "eu-howtheyvote-members",
     "name": "HowTheyVote.eu — members (bulk export)",
     "description": "Eurodéputés (MEPs) du Parlement européen. La release GitHub la plus récente est résolue au moment du fetch: tag inchangé = contenu inchangé, rien n'est retéléchargé.",

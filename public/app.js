@@ -66,8 +66,19 @@ STD.getJSON = async (url) => {
 };
 STD.avatar = (d, cls = "") =>
   `<div class="avatar ${cls}" style="background:${STD.esc(d.groupeColor || d.groupe?.color || "#000091")}">${STD.initials(d)}</div>`;
-STD.grpPill = (sigle, libelle, color) =>
-  `<span class="grp-pill" style="background:${STD.esc(color)}" title="${STD.esc(libelle)}"><span class="grp-dot" style="background:rgba(255,255,255,.7)"></span>${STD.esc(sigle)}</span>`;
+// A group sigle means nothing on its own ("ESN"?), so the full name follows it
+// everywhere. The EP publishes that name per language; anything it doesn't cover
+// falls back to HowTheyVote's English label.
+STD.GRP_L10N = {};                       // sigle → { lang: full name }
+STD.groupNamesReady = STD.getJSON("/api/groupes")
+  .then(({ groupes }) => groupes.forEach((g) => { if (g.libelleL10n) STD.GRP_L10N[g.sigle] = g.libelleL10n; }))
+  .catch(() => {});                      // no localized names → pills keep the English label
+STD.grpName = (libelle, l10n) => {
+  const d = l10n || {};
+  return d[STD.lang] || d.en || libelle || "";
+};
+STD.grpPill = (sigle, libelle, color, l10n) =>
+  `<span class="grp-pill" style="background:${STD.esc(color)}" title="${STD.esc(STD.grpName(libelle, l10n || STD.GRP_L10N[sigle]))}"><span class="grp-dot" style="background:rgba(255,255,255,.7)"></span>${STD.esc(sigle)}</span>`;
 // MEPs are elected by country (no sub-constituency) — depNom already holds "🇫🇷 France".
 STD.circoLabel = (d) => d.depNom || "";
 STD.presenceColor = (v) => (v >= 50 ? "#18753c" : v >= 25 ? "#b34000" : "#e1000f");
