@@ -8,8 +8,15 @@ member_votes (position of every MEP on every roll-call vote).
 
 Emits the SAME JSON shape as the deputy pipeline (uid/slug/"depute"/"deputes" keys)
 so the shared frontend is untouched; the geographic dimension is the MEP's COUNTRY.
+
+Second source, optional: the European Parliament's own full-list XML (meps-<lang>.xml).
+HowTheyVote only knows the EP GROUP, so a fiche used to read "ESN" and nothing else —
+unreadable for a visitor who knows the MEP by their NATIONAL party (Sarah Knafo sits in
+the ESN group, but she was elected for Reconquête!). The EP list carries both, plus the
+group's full name in each language.
 """
 import csv, json, os, sys, re, collections, datetime, unicodedata
+import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw-euro")
@@ -55,6 +62,55 @@ for r in rd("group_memberships.csv"):
 ACTIVE = set(cur_group)
 print("· %d eurodéputés en exercice" % len(ACTIVE), file=sys.stderr)
 
+# ── EP full list: national party + localized group label ──────────────────
+# Keyed by the EP person id, which IS HowTheyVote's member_id (256924 = Sarah KNAFO).
+EP_LANGS = ("en", "fr")
+
+
+def read_ep_list(lang):
+    path = os.path.join(RAW, "meps-%s.xml" % lang)
+    if not os.path.exists(path):
+        return {}
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError as e:
+        print("  ! meps-%s.xml unreadable (%s) — ignored" % (lang, e), file=sys.stderr)
+        return {}
+    out = {}
+    for m in root.findall("mep"):
+        mid = (m.findtext("id") or "").strip()
+        if mid:
+            out[mid] = {"party": (m.findtext("nationalPoliticalGroup") or "").strip(),
+                        "group": (m.findtext("politicalGroup") or "").strip()}
+    return out
+
+
+ep = {lang: read_ep_list(lang) for lang in EP_LANGS}
+# The XML names the group but never codes it, so map code → label through the MEPs
+# themselves: whatever label the members of a code overwhelmingly carry is that code's.
+group_label = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+for lang, rows in ep.items():
+    for mid, row in rows.items():
+        code = cur_group.get(mid)
+        if code and row["group"]:
+            group_label[code][lang][row["group"]] += 1
+GROUP_L10N = {code: {lang: c.most_common(1)[0][0] for lang, c in langs.items() if c}
+              for code, langs in group_label.items()}
+if ep.get("en"):
+    print("· PE: %d eurodéputés, %d groupes libellés en %s"
+          % (len(ep["en"]), len(GROUP_L10N), "/".join(l for l in EP_LANGS if ep.get(l))), file=sys.stderr)
+else:
+    print("  ! liste PE absente — ni parti national ni libellé localisé", file=sys.stderr)
+
+
+def party_of(mid):
+    for lang in EP_LANGS:          # party names are native, identical in every language
+        p = (ep.get(lang, {}).get(mid) or {}).get("party")
+        if p:
+            return p
+    return None
+
+
 meps = {}
 for r in rd("members.csv"):
     mid = r["id"]
@@ -68,7 +124,9 @@ for r in rd("members.csv"):
         "dateNaissance": r.get("date_of_birth") or None, "profession": None,
         "circo": {"departement": (flag(iso2) + " " + label).strip(), "numDepartement": iso2, "region": None, "numCirco": None},
         "countryCode": r["country_code"], "flag": flag(iso2),
+        "parti": party_of(mid),
         "groupeSigle": g["sigle"], "groupeLibelle": g["libelle"], "groupeColor": g["color"],
+        "groupeLibelleL10n": GROUP_L10N.get(cur_group[mid]) or None,
         "hatvp": None, "twitter": (r.get("twitter") or None), "facebook": (r.get("facebook") or None),
         "email": (r.get("email") or None), "website": None,
         "nPour": 0, "nContre": 0, "nAbstention": 0, "nNonVotant": 0,
@@ -150,19 +208,21 @@ total_scrutins = len(TERM10)
 light, game_pool = [], []
 for m in meps.values():
     g = {"sigle": m["groupeSigle"], "libelle": m["groupeLibelle"], "color": m["groupeColor"]}
+    if m["groupeLibelleL10n"]:
+        g["libelleL10n"] = m["groupeLibelleL10n"]
     m["votes"].sort(key=lambda v: (v["date"] or "", v["numero"] or ""), reverse=True)
     full = dict(m)
     full["groupe"] = g
     # show recent CAST votes (roll-calls have many DID_NOT_VOTE rows per session)
     full["votesRecents"] = [v for v in m["votes"] if v["position"] != "nonVotant"][:25]
-    for k in ("votes", "groupeSigle", "groupeLibelle", "groupeColor"):
+    for k in ("votes", "groupeSigle", "groupeLibelle", "groupeColor", "groupeLibelleL10n"):
         full.pop(k, None)
     json.dump(full, open(os.path.join(OUT, "depute", m["uid"] + ".json"), "w"),
               ensure_ascii=False, separators=(",", ":"))
     light.append({
         "uid": m["uid"], "slug": m["slug"], "prenom": m["prenom"], "nom": m["nom"],
         "civ": "", "sexe": "H", "groupe": g["sigle"], "groupeColor": g["color"],
-        "groupeLibelle": g["libelle"], "dep": m["circo"]["numDepartement"],
+        "groupeLibelle": g["libelle"], "parti": m["parti"], "dep": m["circo"]["numDepartement"],
         "depNom": m["circo"]["departement"], "flag": m["flag"], "region": None, "circo": None,
         "presence": m["presenceRate"], "participation": m["participationRate"],
         "nPresent": m["nPresent"], "nEligible": m["nEligible"], "loyalty": m["loyaltyRate"],
@@ -176,13 +236,19 @@ for m in meps.values():
                           "presence": m["presenceRate"], "pour": pour3, "contre": contre3})
 
 light.sort(key=lambda x: (x["nom"] or "", x["prenom"] or ""))
+# sigle → localized full name, once for the whole list instead of on every one of the 719 rows
+sigle_l10n = {}
+for code, labels in GROUP_L10N.items():
+    sigle = groups.get(code, {}).get("sigle") or code
+    sigle_l10n[sigle] = labels
 json.dump({"generatedAt": datetime.date.today().isoformat(), "legislature": "PE 2024-2029",
-           "totalScrutins": total_scrutins, "deputes": light},
+           "totalScrutins": total_scrutins, "groupesL10n": sigle_l10n, "deputes": light},
           open(os.path.join(OUT, "deputes.json"), "w"), ensure_ascii=False, separators=(",", ":"))
 
 gstats = {}
 for x in light:
     a = gstats.setdefault(x["groupe"], {"sigle": x["groupe"], "libelle": x["groupeLibelle"],
+                                        "libelleL10n": sigle_l10n.get(x["groupe"]),
                                         "color": x["groupeColor"], "n": 0, "sp": 0.0, "pp": 0.0})
     a["n"] += 1; a["sp"] += x["presence"]; a["pp"] += x["participation"]
 groupes = []

@@ -20,6 +20,15 @@ for f in members groups group_memberships countries votes member_votes; do
   gunzip -c "$TMP/$f.csv.gz" > "pipeline/raw-euro/$f.csv"
 done
 
+# The EP's own list adds what HowTheyVote does not carry: the NATIONAL party of each
+# MEP (Knafo sits in the ESN group but her party is Reconquête!), and the group's full
+# name in the visitor's language. Optional — a fetch failure must not sink the rebuild.
+for lang in en fr; do
+  echo "· meps-$lang.xml"
+  sluice_get "eu-parliament-meps-$lang" "pipeline/raw-euro/meps-$lang.xml" \
+    || echo "  ! meps-$lang.xml unavailable — building without party/localized group labels"
+done
+
 echo "· rebuilding data …"
 python3 pipeline/build_euro.py
 echo "✓ data refreshed"
