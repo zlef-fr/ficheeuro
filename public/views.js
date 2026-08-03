@@ -24,7 +24,7 @@ function wireSearch(input, box) {
     timer = setTimeout(async () => {
       const [{ results }] = await Promise.all([
         STD.getJSON("/api/search?q=" + encodeURIComponent(q)),
-        STD.groupNamesReady,          // so every pill can name its group in the visitor's language
+        STD.namesReady,               // so groups and countries read in the visitor's language
       ]);
       items = results;
       if (!results.length) { box.innerHTML = `<div class="sr-none">${esc(t("search.none"))}</div>`; return open(); }
@@ -55,6 +55,7 @@ function wireSearch(input, box) {
 V.home = async (root) => {
   setMeta("FicheDéputé.eu — " + t("meta.tagline"), t("meta.sub"), "https://fichedepute.eu/");
   const stats = await STD.getJSON("/api/stats");
+  await STD.namesReady;
   const groupes = (await STD.getJSON("/api/groupes")).groupes;
   const meta = await STD.getJSON("/api/meta");
 
@@ -62,7 +63,7 @@ V.home = async (root) => {
     arr.slice(0, 5).map((d, i) => `<a class="rank-row" href="/depute/${esc(d.slug)}" data-link>
       <span class="pos">${i + 1}</span>${STD.avatar(d)}
       <div class="who"><div class="nm">${esc(d.prenom)} ${esc(d.nom)}</div>
-        <div class="sub">${esc(d.groupe)} · ${esc(d.depNom || "")}</div></div>
+        <div class="sub">${esc(d.groupe)} · ${esc(STD.circoLabel(d))}</div></div>
       <span class="val" style="color:${STD.presenceColor(d.presence)}">${d.presence.toFixed(0)}%</span></a>`).join("");
 
   root.innerHTML = `
@@ -119,7 +120,7 @@ V.home = async (root) => {
 // ── LIST ──────────────────────────────────────────────────────────────────
 V.list = async (root) => {
   setMeta(t("list.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/deputes");
-  const [{ deputes }] = await Promise.all([STD.getJSON("/api/deputes"), STD.groupNamesReady]);
+  const [{ deputes }] = await Promise.all([STD.getJSON("/api/deputes"), STD.namesReady]);
   const groups = [...new Set(deputes.map((d) => d.groupe))].sort();
   const deps = [...new Map(deputes.filter((d) => d.dep).map((d) => [d.dep, d.depNom])).entries()]
     .sort((a, b) => a[0].localeCompare(b[0], "fr", { numeric: true }));
@@ -129,7 +130,7 @@ V.list = async (root) => {
     <div class="filters">
       <input id="f-q" type="search" placeholder="${esc(t("search.placeholder"))}" style="flex:1;min-width:200px">
       <select id="f-g"><option value="">${esc(t("list.filter.group"))}</option>${groups.map((g) => { const full = STD.grpName("", STD.GRP_L10N[g]); return `<option value="${esc(g)}">${esc(full ? `${g} · ${full}` : g)}</option>`; }).join("")}</select>
-      <select id="f-d"><option value="">${esc(t("list.filter.dep"))}</option>${deps.map(([n, l]) => `<option value="${esc(n)}">${esc(n)} · ${esc(l)}</option>`).join("")}</select>
+      <select id="f-d"><option value="">${esc(t("list.filter.dep"))}</option>${deps.map(([n, l]) => `<option value="${esc(n)}">${esc(n)} · ${esc(STD.country(n, l))}</option>`).join("")}</select>
       <select id="f-s">
         <option value="name">${esc(t("list.sort.name"))}</option>
         <option value="pd">${esc(t("list.sort.presence_desc"))}</option>
@@ -176,6 +177,7 @@ V.fiche = async (root, m) => {
   const [d, indem] = await Promise.all([
     STD.getJSON("/api/depute/" + encodeURIComponent(slug)),
     STD.getJSON("/api/indemnite").catch(() => null),
+    STD.namesReady,
   ]);
   const g = d.groupe || { sigle: "NI", color: "#8a8f98", libelle: "Non inscrit" };
   const eur = (n) => n.toLocaleString(STD.lang, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
@@ -317,14 +319,14 @@ V.fiche = async (root, m) => {
 // ── RANKINGS ──────────────────────────────────────────────────────────────
 V.rankings = async (root) => {
   setMeta(t("rank.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/classements");
-  const stats = await STD.getJSON("/api/stats");
+  const [stats] = await Promise.all([STD.getJSON("/api/stats"), STD.namesReady]);
   // colorMode: "score" → green/amber/red by value; "group" → the deputy's group colour
   const tbl = (title, arr, field, colorMode = "score") => `
     <div class="panel" style="margin-bottom:20px">
       <h2>${esc(title)}</h2>
       <div>${arr.slice(0, 15).map((d, i) => `<a class="rank-row" href="/depute/${esc(d.slug)}" data-link>
         <span class="pos">${i + 1}</span>${STD.avatar(d)}
-        <div class="who"><div class="nm">${esc(d.prenom)} ${esc(d.nom)}</div><div class="sub">${esc(d.groupe)} · ${esc(d.depNom || "")}</div></div>
+        <div class="who"><div class="nm">${esc(d.prenom)} ${esc(d.nom)}</div><div class="sub">${esc(d.groupe)} · ${esc(STD.circoLabel(d))}</div></div>
         <span class="val" style="color:${colorMode === "group" ? esc(d.groupeColor) : STD.presenceColor(d[field])}">${d[field].toFixed(1)}%</span></a>`).join("")}</div>
     </div>`;
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
@@ -411,7 +413,7 @@ V.game = async (root) => {
           ${STD.avatar(c)}
           <span class="g-cinfo">
             <span class="g-cname">${esc(c.prenom)} ${esc(c.nom)}</span>
-            <span class="g-cmeta">${esc(c.groupe)}${c.depNom ? " · " + esc(c.depNom) : ""}</span>
+            <span class="g-cmeta">${esc(c.groupe)}${c.depNom ? " · " + esc(STD.circoLabel(c)) : ""}</span>
           </span>
         </button>`).join("")}</div>`;
     const buttons = [...pick.querySelectorAll(".g-choice")];
@@ -452,13 +454,13 @@ V.game = async (root) => {
       timer = setTimeout(async () => {
         const [{ results }] = await Promise.all([
         STD.getJSON("/api/search?q=" + encodeURIComponent(q)),
-        STD.groupNamesReady,          // so every pill can name its group in the visitor's language
+        STD.namesReady,               // so groups and countries read in the visitor's language
       ]);
         if (answered) return;
         if (!results.length) { box.innerHTML = `<div class="sr-none">${esc(t("search.none"))}</div>`; box.hidden = false; return; }
         box.innerHTML = results.map((d) => `<button class="g-sug" data-uid="${esc(d.uid)}">
           ${STD.avatar(d)}<span class="g-cname">${esc(d.prenom)} ${esc(d.nom)}</span>
-          <span class="g-cmeta">${esc(d.groupe)}${d.depNom ? " · " + esc(d.depNom) : ""}</span></button>`).join("");
+          <span class="g-cmeta">${esc(d.groupe)}${d.depNom ? " · " + esc(STD.circoLabel(d)) : ""}</span></button>`).join("");
         box.hidden = false; active = -1;
         box.querySelectorAll(".g-sug").forEach((b) => b.addEventListener("click", () => guess(b.dataset.uid)));
       }, 160);
@@ -502,7 +504,7 @@ V.game = async (root) => {
 // ── GROUPS ────────────────────────────────────────────────────────────────
 V.groups = async (root) => {
   setMeta(t("groups.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/groupes");
-  const { groupes } = await STD.getJSON("/api/groupes");
+  const [{ groupes }] = await Promise.all([STD.getJSON("/api/groupes"), STD.namesReady]);
   root.innerHTML = `<section class="block fade-in"><div class="wrap">
     <div class="sec-head"><h1>${esc(t("groups.title"))}</h1></div>
     <div class="grp-grid">
@@ -523,11 +525,11 @@ V.groups = async (root) => {
 // ── PAYS (per-country stats) ──────────────────────────────────────────────
 V.pays = async (root) => {
   setMeta(t("pays.title") + " — FicheDéputé.eu", t("meta.sub"), "https://fichedepute.eu/pays");
-  const { pays } = await STD.getJSON("/api/pays");
+  const [{ pays }] = await Promise.all([STD.getJSON("/api/pays"), STD.namesReady]);
   const render = (arr) => arr.map((p) => `
     <a class="card pays-card" href="/deputes?pays=${esc(p.code)}" data-link>
       <div class="pays-top"><span class="pays-flag">${esc(p.flag)}</span>
-        <span class="pays-name">${esc(p.label.replace(p.flag, "").trim())}</span>
+        <span class="pays-name">${esc(STD.country(p.code, p.label))}</span>
         <span class="pays-arrow">→</span></div>
       <div class="pays-metrics">
         <div><b>${p.n}</b><span>${esc(t("pays.members"))}</span></div>

@@ -54,7 +54,6 @@ STD.t = (key, vars) => {
 // ── helpers ───────────────────────────────────────────────────────────────
 STD.esc = (s) => (s == null ? "" : String(s).replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c])));
 STD.initials = (d) => ((d.prenom || " ")[0] + (d.nom || " ")[0]).toUpperCase();
-STD.civ = (d) => (d.sexe === "F" ? "Mme" : "M.");
 const cache = {};
 STD.getJSON = async (url) => {
   if (cache[url]) return cache[url];
@@ -70,17 +69,33 @@ STD.avatar = (d, cls = "") =>
 // everywhere. The EP publishes that name per language; anything it doesn't cover
 // falls back to HowTheyVote's English label.
 STD.GRP_L10N = {};                       // sigle → { lang: full name }
+STD.COUNTRY = {};                        // ISO → country name in THIS locale
+// Both labels are baked once in English for all 24 locales, so the SPA fetches the
+// names it should be showing. One round trip each, in parallel with the view's own
+// data; a view that prints either awaits STD.namesReady before its first render.
 STD.groupNamesReady = STD.getJSON("/api/groupes")
   .then(({ groupes }) => groupes.forEach((g) => { if (g.libelleL10n) STD.GRP_L10N[g.sigle] = g.libelleL10n; }))
   .catch(() => {});                      // no localized names → pills keep the English label
+STD.countryNamesReady = STD.getJSON("/api/countries?lang=" + encodeURIComponent(STD.lang))
+  .then((m) => Object.assign(STD.COUNTRY, m))
+  .catch(() => {});                      // → fall back to the baked English label
+STD.namesReady = Promise.all([STD.groupNamesReady, STD.countryNamesReady]);
 STD.grpName = (libelle, l10n) => {
   const d = l10n || {};
   return d[STD.lang] || d.en || libelle || "";
 };
 STD.grpPill = (sigle, libelle, color, l10n) =>
   `<span class="grp-pill" style="background:${STD.esc(color)}" title="${STD.esc(STD.grpName(libelle, l10n || STD.GRP_L10N[sigle]))}"><span class="grp-dot" style="background:rgba(255,255,255,.7)"></span>${STD.esc(sigle)}</span>`;
-// MEPs are elected by country (no sub-constituency) — depNom already holds "🇫🇷 France".
-STD.circoLabel = (d) => d.depNom || "";
+// MEPs are elected by country (no sub-constituency). depNom is baked as "🇫🇷 France"
+// in English, so keep its flag and localize the name — a German reader gets
+// "🇫🇷 Frankreich", which is also what the SSR of the same page renders.
+STD.stripFlag = (s) => String(s || "").replace(/[\u{1F1E6}-\u{1F1FF}]/gu, "").trim();
+STD.country = (iso, fallback) => STD.COUNTRY[iso] || STD.stripFlag(fallback) || iso || "";
+STD.circoLabel = (d) => {
+  const flag = d.flag || (String(d.depNom || "").match(/[\u{1F1E6}-\u{1F1FF}]{2}/u) || [""])[0];
+  const name = STD.country(d.dep, d.depNom);
+  return [flag, name].filter(Boolean).join(" ");
+};
 STD.presenceColor = (v) => (v >= 50 ? "#18753c" : v >= 25 ? "#b34000" : "#e1000f");
 
 STD.toast = (msg) => {
