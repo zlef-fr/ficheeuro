@@ -16,6 +16,7 @@ the ESN group, but she was elected for Reconquête!). The EP list carries both, 
 group's full name in each language.
 """
 import csv, json, os, sys, re, collections, datetime, unicodedata
+import time, urllib.error, urllib.request
 import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -111,6 +112,100 @@ def party_of(mid):
     return None
 
 
+# ── gender, one call per MEP, cached forever ──────────────────────────────
+# Nothing published in bulk carries it: HowTheyVote's members.csv has no such
+# column and the EP's own list endpoints (/api/v2/meps, show-current, the
+# full-list XML) return name/country/group only. It exists exactly one place —
+# the per-person record — so we fetch 719 small documents ONCE and keep them in
+# data/cache/. A later build only asks about MEPs it has never seen.
+# Until this landed every MEP was hardcoded "H": Sarah Knafo was published as male.
+GENDER_CACHE = os.path.join(OUT, "cache", "ep_gender.json")
+EP_PERSON = "https://data.europarl.europa.eu/api/v2/meps/%s?format=application%%2Fld%%2Bjson"
+
+
+def load_gender_cache():
+    try:
+        with open(GENDER_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return {}
+
+
+# The API is quota'd: six parallel workers earn a 429 within ~95 requests and a
+# `retry-after: 60`. One request per second sustains indefinitely (measured), so
+# the first fill costs ~12 min ONCE and later builds cost nothing.
+GENDER_INTERVAL = float(os.environ.get("EP_GENDER_INTERVAL", "1.0"))
+GENDER_BUDGET = int(os.environ.get("EP_GENDER_BUDGET", "900"))
+
+
+def fetch_gender(mid):
+    req = urllib.request.Request(EP_PERSON % mid, headers={
+        "User-Agent": "Mozilla/5.0 (compatible; FicheDepute/1.0; +https://fichedepute.eu)",
+        "Accept": "application/ld+json",
+    })
+    with urllib.request.urlopen(req, timeout=30) as r:
+        doc = json.load(r)
+    person = (doc.get("data") or [{}])[0]
+    # …/authority/human-sex/FEMALE — the site's own field is the AN's "H"/"F"
+    tail = str(person.get("hasGender") or "").rsplit("/", 1)[-1].upper()
+    return "F" if tail == "FEMALE" else ("H" if tail == "MALE" else "")
+
+
+def fetch_gender_polite(mid):
+    # An answer of "" is cached like any other: it means "asked, the EP has no
+    # gender for this person", and must not be re-asked every single day.
+    for attempt in range(1, 4):
+        try:
+            return fetch_gender(mid)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return ""
+            if e.code == 429 and attempt < 3:
+                wait = int(e.headers.get("retry-after") or 60)
+                print("  · quota PE atteint, pause %ds" % wait, file=sys.stderr)
+                time.sleep(wait)
+                continue
+            print("  ! genre %s: %s" % (mid, e), file=sys.stderr)
+            return None
+        except Exception as e:                                   # noqa: BLE001
+            if attempt == 3:
+                print("  ! genre %s: %s" % (mid, e), file=sys.stderr)
+                return None
+            time.sleep(2 * attempt)
+    return None
+
+
+def resolve_genders(ids):
+    cache = load_gender_cache()
+    missing = [i for i in ids if i not in cache]
+    if missing:
+        todo = missing[:GENDER_BUDGET]
+        print("· genre : %d inconnu(s), %d demandés au PE à %.1f req/s (le reste vient du cache)"
+              % (len(missing), len(todo), 1 / GENDER_INTERVAL), file=sys.stderr)
+        for n, mid in enumerate(todo):
+            if n:
+                time.sleep(GENDER_INTERVAL)
+            g = fetch_gender_polite(mid)
+            if g is not None:
+                cache[mid] = g
+        os.makedirs(os.path.dirname(GENDER_CACHE), exist_ok=True)
+        tmp = GENDER_CACHE + ".tmp"
+        json.dump(cache, open(tmp, "w"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+        os.replace(tmp, GENDER_CACHE)
+        left = [i for i in ids if i not in cache]
+        if left:
+            # Not an error: an interrupted fill resumes on the next daily build,
+            # and an MEP whose gender we don't have yet simply isn't gendered.
+            print("  · %d eurodéputé(s) encore sans genre — reprise au prochain build"
+                  % len(left), file=sys.stderr)
+    known = sum(1 for i in ids if cache.get(i))
+    print("· genre connu pour %d/%d eurodéputés" % (known, len(ids)), file=sys.stderr)
+    return cache
+
+
+GENDER = resolve_genders(sorted(ACTIVE))
+
+
 meps = {}
 for r in rd("members.csv"):
     mid = r["id"]
@@ -120,7 +215,7 @@ for r in rd("members.csv"):
     g = groups.get(cur_group[mid], {"sigle": "NI", "libelle": "Non-attached", "color": "#8a8f98"})
     meps[mid] = {
         "uid": mid, "slug": slugify(r["first_name"], r["last_name"]),
-        "prenom": r["first_name"], "nom": r["last_name"], "civ": "", "sexe": "H",
+        "prenom": r["first_name"], "nom": r["last_name"], "civ": "", "sexe": GENDER.get(mid, ""),
         "dateNaissance": r.get("date_of_birth") or None, "profession": None,
         "circo": {"departement": (flag(iso2) + " " + label).strip(), "numDepartement": iso2, "region": None, "numCirco": None},
         "countryCode": r["country_code"], "flag": flag(iso2),
@@ -221,7 +316,7 @@ for m in meps.values():
               ensure_ascii=False, separators=(",", ":"))
     light.append({
         "uid": m["uid"], "slug": m["slug"], "prenom": m["prenom"], "nom": m["nom"],
-        "civ": "", "sexe": "H", "groupe": g["sigle"], "groupeColor": g["color"],
+        "civ": "", "sexe": m["sexe"], "groupe": g["sigle"], "groupeColor": g["color"],
         "groupeLibelle": g["libelle"], "parti": m["parti"], "dep": m["circo"]["numDepartement"],
         "depNom": m["circo"]["departement"], "flag": m["flag"], "region": None, "circo": None,
         "presence": m["presenceRate"], "participation": m["participationRate"],

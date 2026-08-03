@@ -10,6 +10,7 @@ const seo = require("./lib/seo");
 const locales = require("./lib/locales");
 const faq = require("./lib/faq");
 const mediakit = require("./lib/mediakit");
+const countries = require("./lib/countries");
 const { Resvg } = require("@resvg/resvg-js");
 
 // which brand this deployment IS (highlighted first in the media kit) — fr | senat | eu
@@ -105,6 +106,14 @@ const server = http.createServer((req, res) => {
     if (p === "/api/stats") return json(res, data.store.stats);
     if (p === "/api/scrutins") return json(res, { scrutins: data.store.scrutins });
     if (p === "/api/meta") return json(res, data.store.meta);
+    // The data bakes ONE country label ("🇫🇷 France", English) for all 24 locales, so
+    // the SPA needs the localized names the SSR already uses. 27 short strings.
+    if (p === "/api/countries") {
+      const lang = u.searchParams.get("lang") || "en";
+      const out = {};
+      for (const [iso, row] of Object.entries(countries.NAMES)) out[iso] = row[lang] || row.en;
+      return json(res, out, 200, "public, max-age=86400");
+    }
     if (p === "/api/faq") return json(res, faq, 200, "public, max-age=3600");
     if (p === "/api/indemnite") return json(res, data.store.indemnite || {}, 200, "public, max-age=86400");
     if (p === "/api/game/round") {
